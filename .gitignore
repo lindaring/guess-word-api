@@ -17,7 +17,7 @@ hs_err_pid*
 # Project specific excludes
 #
 tomcat
-
+\
 # Binaries
 *.7z
 *.dmg
