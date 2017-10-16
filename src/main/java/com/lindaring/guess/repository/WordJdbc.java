@@ -1,10 +1,11 @@
 package com.lindaring.guess.repository;
 
 import com.lindaring.guess.model.Word;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class WordJdbc {

@@ -3,14 +3,11 @@ package com.lindaring.guess.controller;
 import com.lindaring.guess.exception.NoImplementationException;
 import com.lindaring.guess.exception.WordNotFoundException;
 import com.lindaring.guess.model.Word;
-import com.lindaring.guess.model.WordDefinition;
 import com.lindaring.guess.model.custom.WordWithDefinitions;
 import com.lindaring.guess.service.WordServ;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -33,7 +32,7 @@ public class WordCont {
     public ResponseEntity<WordWithDefinitions> getDefinition(@ApiParam(value="The word id", required=true) @PathVariable int wordId)
             throws WordNotFoundException {
         WordWithDefinitions word = wordServ.getWordDefinition(wordId);
-        return new ResponseEntity<>(word, HttpStatus.OK);
+        return new ResponseEntity<>(word, HttpStatus.FOUND);
     }
 
     @ApiOperation(notes="Check if word already exists", value="Check if word exists")
@@ -65,7 +64,7 @@ public class WordCont {
     public ResponseEntity<List<Word>> getRandomWords(@ApiParam(value="Maximum number of words returned", required=true) @PathVariable int limit)
             throws NoImplementationException {
         List<Word> words = wordServ.getRandomWords(limit);
-        return new ResponseEntity<>(words, HttpStatus.OK);
+        return new ResponseEntity<>(words, HttpStatus.FOUND);
     }
 
     @ApiOperation(notes="Add a new word", value="Add a word")
@@ -73,7 +72,7 @@ public class WordCont {
     public ResponseEntity<Boolean> addWord(@ApiParam(value="New word with list of definitions", required=true) @RequestBody WordWithDefinitions wordWithDefinitions)
             throws NoImplementationException {
         Boolean added = wordServ.addWordDefinition(wordWithDefinitions);        
-        return new ResponseEntity<>(added, HttpStatus.OK);
+        return new ResponseEntity<>(added, HttpStatus.CREATED);
     }
 
 }

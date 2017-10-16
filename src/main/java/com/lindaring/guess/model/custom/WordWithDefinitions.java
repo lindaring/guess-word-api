@@ -2,9 +2,14 @@ package com.lindaring.guess.model.custom;
 
 import com.lindaring.guess.model.Definition;
 import com.lindaring.guess.model.Word;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import lombok.*;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor

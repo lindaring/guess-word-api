@@ -1,8 +1,9 @@
 package com.lindaring.guess.repository;
- 
+
 import com.lindaring.guess.model.Pos;
-import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
 
 public interface PosRepo extends CrudRepository<Pos, Integer>{
     

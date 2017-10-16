@@ -1,8 +1,9 @@
 package com.lindaring.guess.repository;
 
 import com.lindaring.guess.model.Word;
-import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
 
 public interface WordRepo extends CrudRepository<Word, Integer> {
     

@@ -10,13 +10,13 @@ import com.lindaring.guess.repository.DefinitionRepo;
 import com.lindaring.guess.repository.WordDefinitionRepo;
 import com.lindaring.guess.repository.WordJdbc;
 import com.lindaring.guess.repository.WordRepo;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class WordServ {

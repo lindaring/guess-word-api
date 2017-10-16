@@ -2,10 +2,11 @@ package com.lindaring.guess.service;
 
 import com.lindaring.guess.model.Pos;
 import com.lindaring.guess.repository.PosRepo;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Service
 public class PosServ {
