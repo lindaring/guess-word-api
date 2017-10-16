@@ -27,9 +27,9 @@ public class UserCont {
 
     @ApiOperation(notes="Get users with the highest scores", value="Get top score users")
     @RequestMapping(value="/topscore/{limit}", method=RequestMethod.GET, produces="application/json")
-    public List<User> getTopScoreUsers(@ApiParam(value="Return maximum number of users", required=true) @PathVariable int limit) {
+    public ResponseEntity<List<User>> getTopScoreUsers(@ApiParam(value="Return maximum number of users", required=true) @PathVariable int limit) {
         List<User> userList = userServ.getTopScore(limit);
-        return userList;
+        return new ResponseEntity<>(userList, HttpStatus.FOUND);
     }
         
     @ApiOperation(notes="Add a user top-score list", value="Add top-score")

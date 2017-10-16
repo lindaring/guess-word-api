@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +40,10 @@ public class Login implements Serializable {
     @Size(min=1, max=255)
     @Column(name="ip_address")
     private String ipAddress;
+    @Basic(optional=false)
+    @NotNull
+    @Column(name="datetime")
+    private Timestamp datetime;
 
     public Login(Integer loginId) {
         this.loginId = loginId;
