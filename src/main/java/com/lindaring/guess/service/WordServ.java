@@ -3,6 +3,7 @@ package com.lindaring.guess.service;
 import com.lindaring.guess.enumerator.Enabled;
 import com.lindaring.guess.exception.WordNotFoundException;
 import com.lindaring.guess.model.Definition;
+import com.lindaring.guess.model.User;
 import com.lindaring.guess.model.Word;
 import com.lindaring.guess.model.WordDefinition;
 import com.lindaring.guess.model.custom.WordWithDefinitions;
@@ -10,6 +11,7 @@ import com.lindaring.guess.repository.DefinitionRepo;
 import com.lindaring.guess.repository.WordDefinitionRepo;
 import com.lindaring.guess.repository.WordJdbc;
 import com.lindaring.guess.repository.WordRepo;
+import com.lindaring.guess.utils.LoggingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,9 @@ public class WordServ {
     @Autowired
     DefinitionServ defServ;
 
+    @Autowired
+    LoggingUtil logUtil;
+
     private static final Logger log = Logger.getLogger(WordServ.class);
 
     /**
@@ -56,9 +61,10 @@ public class WordServ {
             //Contruct word with definitions for more readable json response
             log.debug(String.format("Word: '%d' definition found: '%s'", wordId, word));
             List<Definition> definitionList = new ArrayList<>();
-            word.stream().forEach(x -> definitionList.add(x.getDefinition()));
+            word.forEach(x -> definitionList.add(x.getDefinition()));
             return WordWithDefinitions.builder().word(word.get(0).getWord()).listOfDefinitions(definitionList).build();
         } else {
+            log.error(String.format("Word: '%d' definition not found", wordId));
             throw new WordNotFoundException();
         }
     }
@@ -78,6 +84,7 @@ public class WordServ {
             log.debug(String.format("Word: '%s' retreived successfully: '%s'", word, lstWord));
             return lstWord.get(0);
         } else {
+            log.error(String.format("Word: '%s' not found", word));
             throw new WordNotFoundException(word);
         }
     }
@@ -101,7 +108,7 @@ public class WordServ {
             log.debug(String.format("Word: '%s' is correct.", word));
             return true;
         } else {
-            log.debug(String.format("Word: '%s' is correct.", word));
+            log.debug(String.format("Word: '%s' is wrong.", word));
             return false;
         }
     }
@@ -113,7 +120,9 @@ public class WordServ {
      * @return the limited number of random words.
      */
     public List<Word> getRandomWords(int limit) {
-        return wordJdbc.findRandomLimit(Enabled.toInt(Enabled.TRUE), limit);
+        List<Word> randomList = wordJdbc.findRandomLimit(Enabled.toInt(Enabled.TRUE), limit);
+        log.debug(String.format("Returned random words: '%s'.", randomList));
+        return randomList;
     }
 
     /**
@@ -122,7 +131,7 @@ public class WordServ {
      * @param word the word.
      * @return the word.
      */
-    public Word addWord(Word word) {
+    private Word addWord(Word word) {
         return wordRepo.save(word);
     }
 
@@ -136,16 +145,20 @@ public class WordServ {
         //Store word
         Word word = addWord(wordWithDefs.getWord());
         wordWithDefs.setWord(word);
+        log.debug(String.format("Stored word '%s'...", word));
 
         for (Definition def : wordWithDefs.getListOfDefinitions()) {
             //Parts of speech
             def.setPos(posServ.getPartOfSpeech(def.getPos()));
+            log.debug(String.format("Got part of speech '%s'...", def.getPos()));
 
             if (def.getPos() != null) {
                 //Store definition
                 Definition definition = defServ.addDefinition(def);
+                log.debug(String.format("Stored definition '%s'...", definition));
                 WordDefinition wordDef = new WordDefinition(0, word, definition);
                 WordDefinition saved = wordDefRepo.save(wordDef);
+                log.debug(String.format("Stored word-definition relationship '%s'...", saved));
             } else {
                 return false;
             }

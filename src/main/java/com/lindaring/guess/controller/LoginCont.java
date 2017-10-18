@@ -1,6 +1,7 @@
 package com.lindaring.guess.controller;
 
 import com.lindaring.guess.service.LoginServ;
+import com.lindaring.guess.utils.LoggingUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,14 @@ public class LoginCont {
     @Autowired
     LoginServ loginServ;
 
+    @Autowired
+    LoggingUtil logUtil;
+
     @ApiOperation(notes="Record ip address", value="record ip address")
     @RequestMapping(value="/{ip:.+}", method=RequestMethod.POST, produces="application/json")
     public ResponseEntity<Boolean> recordIP(@ApiParam(value="Ip address", required=true) @PathVariable String ip)  {
         Boolean isRecorded = loginServ.recordIP(ip);
+        logUtil.logMethodDebug(getClass(), "recordIP", isRecorded, ip);
         return new ResponseEntity<>(isRecorded, HttpStatus.CREATED);
     }
 

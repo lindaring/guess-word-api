@@ -5,6 +5,7 @@ import com.lindaring.guess.exception.WordNotFoundException;
 import com.lindaring.guess.model.Word;
 import com.lindaring.guess.model.custom.WordWithDefinitions;
 import com.lindaring.guess.service.WordServ;
+import com.lindaring.guess.utils.LoggingUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,20 @@ public class WordCont {
     @Autowired
     WordServ wordServ;
 
+    @Autowired
+    LoggingUtil logUtil;
+
     @ApiOperation(notes="Get the definition of a word", value="Definition of a word")
     @RequestMapping(value="/{wordId}", method=RequestMethod.GET, produces="application/json")
     public ResponseEntity<WordWithDefinitions> getDefinition(@ApiParam(value="The word id", required=true) @PathVariable int wordId)
             throws WordNotFoundException {
-        WordWithDefinitions word = wordServ.getWordDefinition(wordId);
-        return new ResponseEntity<>(word, HttpStatus.FOUND);
+        try {
+            WordWithDefinitions word = wordServ.getWordDefinition(wordId);
+            logUtil.logMethodDebug(getClass(), "getDefinition", word, String.valueOf(wordId));
+            return new ResponseEntity<>(word, HttpStatus.FOUND);
+        } catch (WordNotFoundException e) {
+            return new ResponseEntity<>(new WordWithDefinitions(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @ApiOperation(notes="Check if word already exists", value="Check if word exists")
@@ -41,6 +50,7 @@ public class WordCont {
             throws WordNotFoundException {
         try {
             boolean exists = wordServ.getWord(word) != null;
+            logUtil.logMethodDebug(getClass(), "isWordExists", exists, word);
             return new ResponseEntity<>(exists, HttpStatus.OK);
         } catch (WordNotFoundException e) {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -48,11 +58,12 @@ public class WordCont {
     }
 
     @ApiOperation(notes="Check if the provided word matches the specified definition", value="Is provided word correct?")
-    @RequestMapping(value="/{word}/definition/{def}", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value="/{word}/definition/{def:.+}", method=RequestMethod.GET, produces="application/json")
     public ResponseEntity<Boolean> isWordCorrect(@ApiParam(value="The word", required=true) @PathVariable String word,
             @ApiParam(value="The definition", required=true) @PathVariable String def) throws WordNotFoundException {
         try {
             boolean isCorrect = wordServ.isWordCorrect(word, def);
+            logUtil.logMethodDebug(getClass(), "isWordCorrect", isCorrect, word, def);
             return new ResponseEntity<>(isCorrect, HttpStatus.OK);
         } catch (WordNotFoundException e) {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -64,7 +75,8 @@ public class WordCont {
     public ResponseEntity<List<Word>> getRandomWords(@ApiParam(value="Maximum number of words returned", required=true) @PathVariable int limit)
             throws NoImplementationException {
         List<Word> words = wordServ.getRandomWords(limit);
-        return new ResponseEntity<>(words, HttpStatus.FOUND);
+        logUtil.logMethodDebug(getClass(), "getRandomWords", words, String.valueOf(limit));
+        return new ResponseEntity<>(words, !words.isEmpty() ? HttpStatus.FOUND : HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation(notes="Add a new word", value="Add a word")

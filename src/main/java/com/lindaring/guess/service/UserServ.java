@@ -2,6 +2,7 @@ package com.lindaring.guess.service;
 
 import com.lindaring.guess.model.User;
 import com.lindaring.guess.repository.UserRepo;
+import com.lindaring.guess.utils.LoggingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ public class UserServ {
     @Autowired
     UserRepo userRepo;
 
+    @Autowired
+    LoggingUtil logUtil;
+
     /**
      * Add new user to the topscore list if the user with the same score does not exists.
      *
@@ -23,7 +27,10 @@ public class UserServ {
      */
     public User addTopScore(User user) {
         List<User> userList = userRepo.findByNameAndScore(user.getName().toLowerCase(), user.getScore());
-        return userList.isEmpty() ? userRepo.save(user) : new User(0);
+        User response = userList.isEmpty() ? userRepo.save(user) : new User(0);
+
+        logUtil.logMethodDebug(getClass(), "addTopScore", response);
+        return response;
     }
 
     /**
@@ -35,7 +42,10 @@ public class UserServ {
     public List<User> getTopScore(int limit) {
         List<User> userList = new ArrayList<>();
         userRepo.findAllByOrderByScoreDesc().forEach(userList::add);
-        return userList.stream().limit(limit).collect(Collectors.toList());
+
+        List<User> response = userList.stream().limit(limit).collect(Collectors.toList());
+        logUtil.logMethodDebug(getClass(), "getTopScore", response);
+        return response;
     }
 
 }
