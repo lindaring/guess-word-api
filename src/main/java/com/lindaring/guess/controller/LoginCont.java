@@ -29,7 +29,7 @@ public class LoginCont {
     public ResponseEntity<Boolean> recordIP(@ApiParam(value="Ip address", required=true) @PathVariable String ip)  {
         Boolean isRecorded = loginServ.recordIP(ip);
         logUtil.logMethodDebug(getClass(), "recordIP", isRecorded, ip);
-        return new ResponseEntity<>(isRecorded, HttpStatus.CREATED);
+        return new ResponseEntity<>(isRecorded, HttpStatus.OK);
     }
 
 }

@@ -38,7 +38,7 @@ public class WordCont {
         try {
             WordWithDefinitions word = wordServ.getWordDefinition(wordId);
             logUtil.logMethodDebug(getClass(), "getDefinition", word, String.valueOf(wordId));
-            return new ResponseEntity<>(word, HttpStatus.FOUND);
+            return new ResponseEntity<>(word, HttpStatus.OK);
         } catch (WordNotFoundException e) {
             return new ResponseEntity<>(new WordWithDefinitions(), HttpStatus.NOT_FOUND);
         }
@@ -53,7 +53,7 @@ public class WordCont {
             logUtil.logMethodDebug(getClass(), "isWordExists", exists, word);
             return new ResponseEntity<>(exists, HttpStatus.OK);
         } catch (WordNotFoundException e) {
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(false, HttpStatus.OK);
         }
     }
 
@@ -76,7 +76,7 @@ public class WordCont {
             throws NoImplementationException {
         List<Word> words = wordServ.getRandomWords(limit);
         logUtil.logMethodDebug(getClass(), "getRandomWords", words, String.valueOf(limit));
-        return new ResponseEntity<>(words, !words.isEmpty() ? HttpStatus.FOUND : HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(words, !words.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation(notes="Add a new word", value="Add a word")
@@ -84,7 +84,7 @@ public class WordCont {
     public ResponseEntity<Boolean> addWord(@ApiParam(value="New word with list of definitions", required=true) @RequestBody WordWithDefinitions wordWithDefinitions)
             throws NoImplementationException {
         Boolean added = wordServ.addWordDefinition(wordWithDefinitions);        
-        return new ResponseEntity<>(added, HttpStatus.CREATED);
+        return new ResponseEntity<>(added, HttpStatus.OK);
     }
 
 }

@@ -34,7 +34,7 @@ public class UserCont {
     public ResponseEntity<List<User>> getTopScoreUsers(@ApiParam(value="Return maximum number of users", required=true) @PathVariable int limit) {
         List<User> userList = userServ.getTopScore(limit);
         logUtil.logMethodDebug(getClass(), "getTopScoreUsers", userList, String.valueOf(limit));
-        return new ResponseEntity<>(userList, HttpStatus.FOUND);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
         
     @ApiOperation(notes="Add a user top-score list", value="Add top-score")
@@ -43,6 +43,6 @@ public class UserCont {
         User topScore = userServ.addTopScore(user);
         Boolean isAdded = (topScore.getUserId() == 0) || !StringUtils.isEmpty(topScore.getUserId());
         logUtil.logMethodDebug(getClass(), "addTopScore", isAdded, user.toString());
-        return new ResponseEntity<>(isAdded, HttpStatus.CREATED);
+        return new ResponseEntity<>(isAdded, HttpStatus.OK);
     }
 }
